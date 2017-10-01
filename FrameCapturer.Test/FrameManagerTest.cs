@@ -61,7 +61,7 @@ namespace FrameCapturer.Test
         [TestMethod]
         public void AddFrameTest()
         {
-            // test case 1
+            // test case 1 (Add 11 frames, which is less than target_legnth_max, then add another frame)
             FrameManager fm = new FrameManager(10);
             for (int i = 0; i < 11; ++i)
             {
@@ -70,9 +70,28 @@ namespace FrameCapturer.Test
             }
 
             var actual = fm.StoredFrameCount;
-            Assert.AreEqual(11, actual);
+            var expect = 11;
+            Assert.AreEqual(expect, actual);
 
-            // test case 2
+            // Add a frame
+            fm.AddFrame(new Frame { frameId = 12, frameResource = "Placeholder Content" });
+            actual = fm.StoredFrameCount;
+            expect = 12;
+            Assert.AreEqual(expect, actual);
+
+            // test case 2 (Add number of frames equal to target_length_max)
+            fm = new FrameManager(5);
+            for (int i = 0; i < 6; ++i)
+            {
+                Frame newF = new Frame { frameId = i + 1, frameResource = "Placeholder Content" };
+                fm.AddFrame(newF);
+            }
+
+            actual = fm.StoredFrameCount;
+            expect = 6;
+            Assert.AreEqual(expect, actual);
+
+            // test case 3, Add number of frames larger than target_length_max
             fm = new FrameManager(5);
             for (int i = 0; i < 7; ++i)
             {
@@ -81,13 +100,14 @@ namespace FrameCapturer.Test
             }
 
             actual = fm.StoredFrameCount;
-            Assert.AreEqual(4, actual);
+            expect = 4;
+            Assert.AreEqual(expect, actual);
         }
 
         [TestMethod]
         public void GetFrameTest()
         {
-            // test case 1
+            // multiple tests simulating different usage scenarios
             var fm = new FrameManager(5);
             for (int i = 0; i < 9; ++i)
             {
@@ -134,7 +154,7 @@ namespace FrameCapturer.Test
                 }
             }
 
-            // test case 2
+            // another test case with different target_length
             fm = new FrameManager(3);
             for (int i = 0; i < 9; ++i)
             {
